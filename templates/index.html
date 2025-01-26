@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Prediction</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+
+        input[type="submit"] {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #444;
+        }
+
+        .resultfinal {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.5em;
+            color: #444;
+        }
+
+        canvas {
+            margin-top: 20px;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Flower Class Prediction</h1>
+        <form action="/predict" method="POST">
+            <div class="form-group">
+                <label for="sepal_length">Sepal Length:</label>
+                <input type="text" id="sepal_length" name="sepal_length" oninput="updateChart()">
+            </div>
+            <div class="form-group">
+                <label for="sepal_width">Sepal Width:</label>
+                <input type="text" id="sepal_width" name="sepal_width" oninput="updateChart()">
+            </div>
+            <div class="form-group">
+                <label for="petal_length">Petal Length:</label>
+                <input type="text" id="petal_length" name="petal_length" oninput="updateChart()">
+            </div>
+            <div class="form-group">
+                <label for="petal_width">Petal Width:</label>
+                <input type="text" id="petal_width" name="petal_width" oninput="updateChart()">
+            </div>
+            <input type="submit" value="Predict">
+        </form>
+        <div class="result">
+            Sepal Length: {{sepal_length}}
+        </div>
+        <div class="result">
+            Sepal Width: {{sepal_width}}
+        </div>
+        <div class="result">
+            Petal Length: {{petal_length}}
+        </div>
+        <div class="result">
+            Petal Width: {{petal_width}}
+        </div>
+        <div class="resultfinal">
+            Class: {{result}}
+        </div>
+
+        <canvas id="inputChart" width="300" height="300"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('inputChart').getContext('2d');
+        const inputChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Sepal Length', 'Sepal Width', 'Petal Length', 'Petal Width'],
+                datasets: [{
+                    label: 'Input Values',
+                    data: [0, 0, 0, 0],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                scale: {
+                    ticks: { beginAtZero: true }
+                }
+            }
+        });
+
+        function updateChart() {
+            const sepalLength = parseFloat(document.getElementById('sepal_length').value) || 0;
+            const sepalWidth = parseFloat(document.getElementById('sepal_width').value) || 0;
+            const petalLength = parseFloat(document.getElementById('petal_length').value) || 0;
+            const petalWidth = parseFloat(document.getElementById('petal_width').value) || 0;
+
+            inputChart.data.datasets[0].data = [sepalLength, sepalWidth, petalLength, petalWidth];
+            inputChart.update();
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
